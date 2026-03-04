@@ -196,16 +196,33 @@ import { FAQJsonLd, ArticleJsonLd } from "@/components/seo/JsonLd";
 import { ArticleNavigation } from "@/components/ArticleNavigation";
 import { RelatedArticles } from "@/components/RelatedArticles";
 import { ArticleAuthor } from "@/components/ArticleAuthor";
+import { Badge } from "@/components/ui/badge";
 ```
 
 Do not rename these exports. Do not move these files.
 
-`BlogOGImage` contract:
+Component prop contracts (must match exactly):
+
+```tsx
+// ArticleAuthor — publish date + optional updated date
+<ArticleAuthor date="2026-01-15" updated="2026-02-01" />
+
+// ArticleNavigation — slug of current article, shows prev/next from blog-data.ts
+<ArticleNavigation currentSlug="my-article-slug" />
+
+// RelatedArticles — array of articles passed per-article (NOT auto-selected)
+<RelatedArticles articles={[
+  { title: "...", slug: "...", description: "..." },
+  { title: "...", slug: "...", description: "..." },
+]} />
+```
+
+`BlogOGImage` contract (3 params, subtitle is optional):
 ```tsx
 // Called from: src/app/blog/<slug>/opengraph-image.tsx
 import { BlogOGImage } from "@/components/seo/BlogOGImage";
 export default async function Image() {
-  return BlogOGImage({ title: "...", category: "Guide" });
+  return BlogOGImage({ title: "...", category: "Guide", subtitle: "optional" });
 }
 // Must return ImageResponse (1200x630)
 ```

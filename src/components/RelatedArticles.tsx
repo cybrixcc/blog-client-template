@@ -1,40 +1,44 @@
-// TODO: Implement related articles block
-// Shown at the bottom of each blog article
-//
-// Should include:
-//   - 2-3 article cards with title, description, badge
-//   - Links to /blog/<slug>
-//   - "Related articles" heading
-//
-// Props:
-//   currentSlug: string — exclude current article from suggestions
-//
-// Data source: import { articles } from "@/lib/blog-data"
+// Related articles grid — shown at the bottom of every generated article.
+// Engine passes: articles (array of related articles chosen per-article).
+// Each article has: title, slug, description.
 
-import { articles } from "@/lib/blog-data";
+import Link from "next/link";
 
-interface RelatedArticlesProps {
-  currentSlug: string;
+export interface RelatedArticle {
+  title: string;
+  slug: string;
+  description: string;
 }
 
-export function RelatedArticles({ currentSlug }: RelatedArticlesProps) {
-  const related = articles
-    .filter((a) => a.slug !== currentSlug)
-    .slice(0, 3);
+interface RelatedArticlesProps {
+  articles: RelatedArticle[];
+}
 
-  if (related.length === 0) return null;
+export function RelatedArticles({ articles }: RelatedArticlesProps) {
+  if (!articles || articles.length === 0) return null;
 
   return (
-    <section>
-      <h2>Related articles</h2>
-      <ul>
-        {related.map((article) => (
-          <li key={article.slug}>
-            <a href={`/blog/${article.slug}`}>{article.title}</a>
-            <p>{article.description}</p>
-          </li>
-        ))}
-      </ul>
+    <section className="border-t border-border pt-12 mt-16 pb-16">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-2xl font-bold text-foreground mb-8">Related Articles</h2>
+        <div className="grid md:grid-cols-3 gap-6">
+          {articles.map((article) => (
+            <Link
+              key={article.slug}
+              href={`/blog/${article.slug}`}
+              className="block bg-card border border-border rounded-xl p-6 hover:border-primary/50 transition-colors group"
+            >
+              <h3 className="text-lg font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
+                {article.title}
+              </h3>
+              <p className="text-sm text-muted-foreground line-clamp-2">
+                {article.description}
+              </p>
+              <span className="inline-block mt-4 text-sm text-primary">Read more</span>
+            </Link>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }

@@ -1,15 +1,17 @@
 # My Blog — LLM Context
 
-> Auto-updated by article generator. Helps AI systems understand your site.
+> Auto-updated by article generator. Helps AI systems discover and understand this site.
 
 ## Site
 
-- Name: My Blog
-- URL: https://example.com
-- Niche: Your niche
+- **Name**: My Blog
+- **URL**: https://example.com
+- **Niche**: Your niche
+
+---
 
 ## Blog Articles
 
 ### Blog Articles
 
-- /: Home page
+- /blog: Blog index — all published articles

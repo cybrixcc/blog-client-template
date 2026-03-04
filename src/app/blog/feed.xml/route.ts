@@ -1,37 +1,55 @@
-// Auto-updated by article generator — do not edit manually
+import { NextResponse } from 'next/server';
+import { articles } from '@/lib/blog-data';
+
+// force-static is required for output: "export" (static export) to work with route handlers
+export const dynamic = 'force-static';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
 const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || 'My Blog';
 
-const articles = [
-  // Articles will be added here automatically by the generator
-];
+function generateRSS() {
+  const buildDate = new Date().toUTCString();
 
-export async function GET() {
-  const items = articles
-    .map(
-      (article) => `
+  const rssItems = articles
+    .map((article) => {
+      const link = `${SITE_URL}/blog/${article.slug}`;
+      const pubDate = new Date(article.date || new Date()).toUTCString();
+
+      return `
     <item>
       <title><![CDATA[${article.title}]]></title>
-      <link>${SITE_URL}/blog/${article.slug}</link>
+      <link>${link}</link>
+      <guid isPermaLink="true">${link}</guid>
       <description><![CDATA[${article.description}]]></description>
-      <pubDate>${new Date(article.date).toUTCString()}</pubDate>
-      <guid>${SITE_URL}/blog/${article.slug}</guid>
-    </item>`
-    )
+      <pubDate>${pubDate}</pubDate>
+    </item>`;
+    })
     .join('');
 
-  const feed = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+     xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>${SITE_NAME}</title>
-    <link>${SITE_URL}</link>
+    <link>${SITE_URL}/blog</link>
     <description>${SITE_NAME} — latest articles</description>
-    ${items}
+    <language>en-us</language>
+    <lastBuildDate>${buildDate}</lastBuildDate>
+    <atom:link href="${SITE_URL}/blog/feed.xml" rel="self" type="application/rss+xml"/>
+    <copyright>Copyright ${new Date().getFullYear()} ${SITE_NAME}</copyright>
+    <ttl>60</ttl>
+    ${rssItems}
   </channel>
 </rss>`;
+}
 
-  return new Response(feed, {
-    headers: { 'Content-Type': 'application/xml' },
+export async function GET() {
+  const rss = generateRSS();
+
+  return new NextResponse(rss, {
+    headers: {
+      'Content-Type': 'application/xml; charset=utf-8',
+      'Cache-Control': 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400',
+    },
   });
 }
