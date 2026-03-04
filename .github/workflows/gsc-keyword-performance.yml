@@ -1,0 +1,13 @@
+name: GSC Keyword Performance
+
+on:
+  schedule:
+    - cron: '0 10 * * 4'  # Thursdays 10:00 UTC
+  workflow_dispatch:
+
+jobs:
+  keyword-performance:
+    uses: cybrixcc/leadhunter-engine/.github/workflows/gsc-keyword-performance.yml@main
+    with:
+      config_path: ./config.yml
+    secrets: inherit

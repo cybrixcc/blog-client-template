@@ -1,0 +1,14 @@
+name: AI Article Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+    paths:
+      - 'src/app/blog/**'
+
+jobs:
+  review:
+    uses: cybrixcc/leadhunter-engine/.github/workflows/ai-article-review.yml@main
+    with:
+      config_path: ./config.yml
+    secrets: inherit

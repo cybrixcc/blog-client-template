@@ -1,0 +1,13 @@
+name: GSC Index Check
+
+on:
+  schedule:
+    - cron: '0 10 * * 1,3,5'  # Mon/Wed/Fri 10:00 UTC
+  workflow_dispatch:
+
+jobs:
+  gsc-index-check:
+    uses: cybrixcc/leadhunter-engine/.github/workflows/gsc-index-check.yml@main
+    with:
+      config_path: ./config.yml
+    secrets: inherit

@@ -1,0 +1,61 @@
+# ============================================================
+# Blog Client Config
+# Full parameter reference: see config.schema.yml in
+# https://github.com/cybrixcc/leadhunter-engine
+# ============================================================
+
+# ---------------------------------------------------------------------------
+# Required
+# ---------------------------------------------------------------------------
+site_name: "My Blog"
+site_url: "https://example.com"
+cta_url: "https://example.com/#contact"
+niche: "your niche here"
+
+# ---------------------------------------------------------------------------
+# Git bot identity
+# ---------------------------------------------------------------------------
+git_user_name: "Blog Bot"
+git_user_email: "bot@example.com"
+
+# ---------------------------------------------------------------------------
+# GSC
+# ---------------------------------------------------------------------------
+# gsc_site_url: "sc-domain:example.com"  # auto-derived from site_url if omitted
+# brand_terms: []                          # brand terms to exclude from keyword analysis
+
+# ---------------------------------------------------------------------------
+# Telegram notifications
+# ---------------------------------------------------------------------------
+# telegram_site_label: "My Blog"          # defaults to site_name
+
+# ---------------------------------------------------------------------------
+# AI Citation Research
+# ---------------------------------------------------------------------------
+citation_research:
+  brand_patterns:
+    - "mybrand"
+    - "mybrand\\.com"
+
+  product_description: "MyBrand (example.com) is a ... [fill in: what it does, key differentiators, pricing]."
+
+  competitors:
+    - name: "Competitor A"
+      pattern: "competitor[- ]?a"
+    - name: "Competitor B"
+      pattern: "competitor[- ]?b"
+    # add more...
+
+  query_categories:
+    tool-comparison:
+      label: "Tool Comparison"
+      queries:
+        - "What are the best tools for [your niche] in 2026?"
+        - "Top alternatives to [main competitor] for [use case]"
+        # add more...
+
+    how-to:
+      label: "How-To"
+      queries:
+        - "How to [solve main problem your product addresses]?"
+        # add more...

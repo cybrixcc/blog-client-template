@@ -1,0 +1,25 @@
+name: Generate Blog Article
+
+on:
+  schedule:
+    - cron: '0 9 * * *'   # 09:00 UTC daily — adjust as needed
+  workflow_dispatch:
+    inputs:
+      topic_number:
+        description: 'Specific topic number (optional)'
+        required: false
+        type: number
+      dry_run:
+        description: 'Dry run (no commit/PR)'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  generate:
+    uses: cybrixcc/leadhunter-engine/.github/workflows/generate-article.yml@main
+    with:
+      config_path: ./config.yml
+      topic_number: ${{ inputs.topic_number }}
+      dry_run: ${{ inputs.dry_run || false }}
+    secrets: inherit
