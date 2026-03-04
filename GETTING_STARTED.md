@@ -73,9 +73,9 @@ Style them to match the client's website design.
 Priority order:
 1. `Header.tsx` — logo, navigation, CTA button
 2. `Footer.tsx` — links, copyright, socials
-3. `BlogOGImage.tsx` — use `ImageResponse` from `next/og`, size 1200×630
+3. `BlogOGImage.tsx` — already implemented, fill in the TODO brand markers (colors, initials, name, URL)
 4. `ArticleAuthor.tsx` — author avatar, name, bio
-5. `ArticleNavigation.tsx` — table of contents, style it
+5. `ArticleNavigation.tsx` — prev/next article links, already functional, style it
 6. `RelatedArticles.tsx` — already functional, style it
 
 **Do not rename these components or their exports** — the engine generates article files that import them by these exact names.
