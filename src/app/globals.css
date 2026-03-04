@@ -3,20 +3,206 @@
 
 @custom-variant dark (&:is(.dark *));
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ============================================================
+   THEME SYSTEM
+   Apply a theme class to <html> or <body>:
+     theme-dark         — dark charcoal (default)
+     theme-dark-purple  — dark purple
+     theme-light        — clean white
+     theme-light-warm   — warm cream
+   ============================================================ */
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --font-sans: var(--font-sans-family, ui-sans-serif, system-ui, sans-serif);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ============================================================
+   THEME 1 — Dark Charcoal (default)
+   Deep dark background, high contrast, clean & modern
+   ============================================================ */
+:root,
+.theme-dark {
+  --radius: 0.625rem;
+
+  --background: #0d0d0d;
+  --foreground: #e8e6e3;
+
+  --card: #161616;
+  --card-foreground: #e8e6e3;
+  --popover: #1a1a1a;
+  --popover-foreground: #e8e6e3;
+
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+
+  --secondary: #242424;
+  --secondary-foreground: #e8e6e3;
+
+  --muted: #1e1e1e;
+  --muted-foreground: #a8a8a8;
+
+  --accent: #3b82f6;
+  --accent-foreground: #ffffff;
+
+  --destructive: #f44747;
+
+  --border: #2a2a2a;
+  --input: #2a2a2a;
+  --ring: #3b82f6;
+}
+
+/* ============================================================
+   THEME 2 — Dark Purple
+   Rich dark violet, great for AI / tech / premium SaaS blogs
+   ============================================================ */
+.theme-dark-purple {
+  --radius: 0.625rem;
+
+  --background: #0f0b1a;
+  --foreground: #ede9f8;
+
+  --card: #17112a;
+  --card-foreground: #ede9f8;
+  --popover: #1d1535;
+  --popover-foreground: #ede9f8;
+
+  --primary: #a78bfa;
+  --primary-foreground: #0f0b1a;
+
+  --secondary: #241b3d;
+  --secondary-foreground: #ede9f8;
+
+  --muted: #1d1535;
+  --muted-foreground: #9d8ec4;
+
+  --accent: #7c3aed;
+  --accent-foreground: #ffffff;
+
+  --destructive: #f44747;
+
+  --border: #2e2250;
+  --input: #2e2250;
+  --ring: #a78bfa;
+}
+
+/* ============================================================
+   THEME 3 — Light Clean
+   Pure white, crisp borders, minimal — great for professional blogs
+   ============================================================ */
+.theme-light {
+  --radius: 0.625rem;
+
+  --background: #ffffff;
+  --foreground: #0f172a;
+
+  --card: #f8fafc;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+
+  --accent: #dbeafe;
+  --accent-foreground: #1e40af;
+
+  --destructive: #dc2626;
+
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #2563eb;
+}
+
+/* ============================================================
+   THEME 4 — Light Warm
+   Warm cream tones, soft shadows — great for content-heavy blogs
+   ============================================================ */
+.theme-light-warm {
+  --radius: 0.625rem;
+
+  --background: #faf7f2;
+  --foreground: #1c1917;
+
+  --card: #ffffff;
+  --card-foreground: #1c1917;
+  --popover: #ffffff;
+  --popover-foreground: #1c1917;
+
+  --primary: #d97706;
+  --primary-foreground: #ffffff;
+
+  --secondary: #f5f0e8;
+  --secondary-foreground: #1c1917;
+
+  --muted: #f5f0e8;
+  --muted-foreground: #78716c;
+
+  --accent: #fef3c7;
+  --accent-foreground: #92400e;
+
+  --destructive: #dc2626;
+
+  --border: #e7e0d5;
+  --input: #e7e0d5;
+  --ring: #d97706;
+}
+
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+  a,
+  button {
+    touch-action: manipulation;
+  }
+}
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+@layer utilities {
+  .text-gradient-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .bg-gradient-subtle {
+    background: linear-gradient(180deg, var(--background) 0%, var(--card) 100%);
+  }
 }

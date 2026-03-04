@@ -18,13 +18,35 @@ A client blog powered by [leadhunter-engine](https://github.com/cybrixcc/leadhun
 
 | Layer | Technology |
 |-------|-----------|
-| Framework | Next.js 16 (App Router) |
+| Framework | Next.js 16 (App Router, `output: "export"` — static) |
 | Language | TypeScript 5.9 strict mode |
 | Styling | Tailwind CSS v4 |
-| UI icons | lucide-react |
-| Utilities | clsx, tailwind-merge |
+| UI components | shadcn/ui (Badge, Button, Card, Accordion, Separator) |
+| UI primitives | Radix UI (`@radix-ui/react-*`) |
+| Variants | class-variance-authority |
+| Icons | lucide-react |
+| Utilities | clsx, tailwind-merge, `cn()` from `@/lib/utils` |
+| Fonts | Geist (next/font/google) |
+| Hosting | Cloudflare Pages (security headers in `public/_headers`) |
 | Runtime | Node.js 22 |
 | Package manager | npm |
+
+## Themes
+
+4 built-in themes in `src/app/globals.css`. Apply via class on `<html>`:
+
+| Class | Description |
+|-------|-------------|
+| `theme-dark` | Dark charcoal — default, universal |
+| `theme-dark-purple` | Dark violet — AI / tech / premium SaaS |
+| `theme-light` | Clean white — professional / B2B |
+| `theme-light-warm` | Warm cream — content-heavy / editorial |
+
+**To pick a theme:** edit `src/app/layout.tsx` → change `className` on `<html>`.
+
+Each theme defines the same CSS variables (`--primary`, `--background`, `--card`, etc.) so all shadcn/ui components automatically adapt.
+
+**To customize a theme:** override the variables in `globals.css` under the relevant class. Only change `--primary` and `--accent` to match client brand colors — the rest will follow.
 
 ## Commands
 
@@ -61,7 +83,14 @@ src/
     seo/
       JsonLd.tsx                    ← ArticleJsonLd + FAQJsonLd (implemented)
       BlogOGImage.tsx               ← OG image component (TODO: implement)
+    ui/
+      badge.tsx                     ← shadcn/ui Badge
+      button.tsx                    ← shadcn/ui Button
+      card.tsx                      ← shadcn/ui Card
+      accordion.tsx                 ← shadcn/ui Accordion (for FAQ sections)
+      separator.tsx                 ← shadcn/ui Separator
   lib/
+    utils.ts                        ← cn() helper (clsx + tailwind-merge)
     blog-data.ts                    ← article index, auto-updated by engine
 public/
   llms.txt                         ← LLM context file, auto-updated by engine
