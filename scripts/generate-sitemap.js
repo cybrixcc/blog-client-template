@@ -10,9 +10,10 @@
  *   node scripts/generate-sitemap.js
  */
 
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
+import fs from 'fs';
+import path from 'path';
+import { execSync } from 'child_process';
+import { glob } from 'glob';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
 
@@ -50,7 +51,7 @@ const PRIORITY_RULES = [
 ];
 
 const EXCLUDE_PATTERNS = [
-  /\[.*\]/,        // Dynamic routes — excluded, each article has its own static page
+  /\[.*\]/,        // Dynamic routes
   /^\/not-found$/, // Error pages
 ];
 
@@ -69,9 +70,6 @@ function shouldExclude(urlPath) {
 
 async function generateSitemap() {
   ensureFullGitHistory();
-
-  // Dynamically import glob (ESM)
-  const { glob } = await import('glob');
 
   const appDir = path.join(process.cwd(), 'src/app');
   const pageFiles = await glob('**/page.tsx', { cwd: appDir });
