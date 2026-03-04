@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   citation-research:
-    uses: cybrixcc/leadhunter-engine/.github/workflows/ai-citation-research.yml@main
+    uses: cybrixcc/leadhunter-engine/.github/workflows/ai-citation-research.yml@master
     with:
       config_path: ./config.yml
     secrets: inherit

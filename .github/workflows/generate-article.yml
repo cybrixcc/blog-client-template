@@ -15,9 +15,13 @@ on:
         default: false
         type: boolean
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   generate:
-    uses: cybrixcc/leadhunter-engine/.github/workflows/generate-article.yml@main
+    uses: cybrixcc/leadhunter-engine/.github/workflows/generate-article.yml@master
     with:
       config_path: ./config.yml
       topic_number: ${{ inputs.topic_number }}

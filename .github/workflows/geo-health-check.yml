@@ -5,9 +5,13 @@ on:
     - cron: '0 9 * * 1'  # Mondays 09:00 UTC
   workflow_dispatch:
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   geo-health-check:
-    uses: cybrixcc/leadhunter-engine/.github/workflows/geo-health-check.yml@main
+    uses: cybrixcc/leadhunter-engine/.github/workflows/geo-health-check.yml@master
     with:
       config_path: ./config.yml
       blog_glob: 'src/app/blog/*/page.tsx'  # adjust to your blog file structure

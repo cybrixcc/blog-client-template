@@ -5,9 +5,13 @@ on:
     - cron: '0 10 * * 4'  # Thursdays 10:00 UTC
   workflow_dispatch:
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   keyword-performance:
-    uses: cybrixcc/leadhunter-engine/.github/workflows/gsc-keyword-performance.yml@main
+    uses: cybrixcc/leadhunter-engine/.github/workflows/gsc-keyword-performance.yml@master
     with:
       config_path: ./config.yml
     secrets: inherit
