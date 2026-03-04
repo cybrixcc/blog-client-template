@@ -20,8 +20,6 @@ Do not start writing code until you have read all five.
 
 ## Recommended Models
 
-Use these models for different tasks:
-
 | Task | Model |
 |------|-------|
 | Initial setup, research, planning | `claude-sonnet-4-6` |
@@ -48,26 +46,23 @@ Default to `claude-sonnet-4-6` when unsure.
 ## Code Style Rules
 
 **No emojis — anywhere:**
-- Not in commit messages
-- Not in PR titles or descriptions
-- Not in UI text, headings, or button labels
+- Not in commit messages, PR titles, PR descriptions
+- Not in UI text, headings, button labels
 - Not in code comments
 
 **Icons — use Lucide React only:**
 - Import from `lucide-react`
-- Never use emoji as a substitute for icons
+- Never use emoji as icon substitutes
 - Never use other icon libraries
-- Example: use `<CheckIcon />` not ✓, use `<ArrowRightIcon />` not →
 
-**Commits:**
-- Plain English, no emoji, imperative mood
+**Commits — plain English, imperative mood:**
 - Good: `feat: add article navigation component`
 - Bad: `✨ Added article navigation 🎉`
 
 **Components:**
 - Always use `cn()` from `@/lib/utils` for conditional classes
-- Always use shadcn/ui components (`Badge`, `Button`, `Card`) — do not build primitives from scratch
-- Keep components focused — one responsibility per file
+- Always use shadcn/ui primitives (`Badge`, `Button`, `Card`) — do not reinvent them
+- One responsibility per file
 
 ---
 
@@ -102,7 +97,7 @@ A client blog powered by [leadhunter-engine](https://github.com/cybrixcc/leadhun
 
 ## Themes
 
-4 built-in themes in `src/app/globals.css`. Apply via class on `<html>`:
+4 built-in themes in `src/app/globals.css`. Apply via class on `<html>` in `layout.tsx`:
 
 | Class | Description |
 |-------|-------------|
@@ -111,11 +106,7 @@ A client blog powered by [leadhunter-engine](https://github.com/cybrixcc/leadhun
 | `theme-light` | Clean white — professional / B2B |
 | `theme-light-warm` | Warm cream — content-heavy / editorial |
 
-**To pick a theme:** edit `src/app/layout.tsx` → change `className` on `<html>`.
-
-Each theme defines the same CSS variables (`--primary`, `--background`, `--card`, etc.) so all shadcn/ui components automatically adapt.
-
-**To customize:** only override `--primary` and `--accent` under the chosen theme class in `globals.css` to match the client's brand colors. The rest will follow automatically.
+To customize: override only `--primary` and `--accent` under the chosen theme class in `globals.css`. All shadcn/ui components adapt automatically.
 
 ---
 
@@ -135,60 +126,76 @@ Always run `npm run build` before committing UI changes.
 ## Repository Structure
 
 ```
-config.yml                          ← engine config (site_name, site_url, niche, etc.)
-CONTENT_PLAN.md                     ← topic backlog, auto-updated by engine
-docs/briefs/NN-slug.md              ← per-topic briefs, read by engine
+config.yml                           ← engine config (fill in all values)
+CONTENT_PLAN.md                      ← topic backlog, auto-updated by engine
+docs/briefs/NN-slug.md               ← per-topic briefs, read by engine
+scripts/generate-sitemap.js          ← runs before build, generates public/sitemap.xml
 src/
   app/
-    layout.tsx                      ← root layout, theme class goes here
-    page.tsx                        ← homepage
-    globals.css                     ← Tailwind base + 4 themes
+    layout.tsx                       ← root layout — theme, metadata, analytics TODO
+    page.tsx                         ← homepage (TODO: implement)
+    globals.css                      ← Tailwind base + 4 themes
+    robots.ts                        ← robots.txt (auto-generated)
     blog/
-      page.tsx                      ← blog index (/blog)
-      [slug]/page.tsx               ← dynamic fallback route
-      <slug>/page.tsx               ← generated articles (written by engine)
-      <slug>/opengraph-image.tsx    ← OG images (written by engine)
-      feed.xml/route.ts             ← RSS feed (updated by engine)
+      page.tsx                       ← blog index (/blog)
+      feed.xml/route.ts              ← RSS feed (auto-updated by engine)
+      <slug>/page.tsx                ← generated articles (written by engine)
+      <slug>/opengraph-image.tsx     ← OG images (written by engine)
   components/
-    Header.tsx                      ← site header
-    Footer.tsx                      ← site footer
-    ArticleAuthor.tsx               ← author block in articles
-    ArticleNavigation.tsx           ← table of contents
-    RelatedArticles.tsx             ← related articles block
+    Header.tsx                       ← site header (TODO: implement)
+    Footer.tsx                       ← site footer (TODO: implement)
+    Breadcrumbs.tsx                  ← breadcrumb nav + JSON-LD (ready to use)
+    ArticleAuthor.tsx                ← author byline — fill in name/initials
+    ArticleNavigation.tsx            ← prev/next article links (ready to use)
+    RelatedArticles.tsx              ← related articles grid (ready to use)
+    BlogContent.tsx                  ← article cards for blog index (ready to use)
     seo/
-      JsonLd.tsx                    ← ArticleJsonLd + FAQJsonLd (ready to use)
-      BlogOGImage.tsx               ← OG image component
+      JsonLd.tsx                     ← all JSON-LD schemas (ready to use)
+      BlogOGImage.tsx                ← OG image 1200x630 — fill in brand TODO markers
     ui/
-      badge.tsx                     ← shadcn/ui Badge
-      button.tsx                    ← shadcn/ui Button
-      card.tsx                      ← shadcn/ui Card
-      accordion.tsx                 ← shadcn/ui Accordion
-      separator.tsx                 ← shadcn/ui Separator
+      badge.tsx, button.tsx, card.tsx, accordion.tsx, separator.tsx  ← shadcn/ui
   lib/
-    utils.ts                        ← cn() helper
-    blog-data.ts                    ← article index, auto-updated by engine
+    utils.ts                         ← cn() helper
+    blog-data.ts                     ← article index, auto-updated by engine
 public/
-  llms.txt                          ← LLM context file, auto-updated by engine
-  _headers                          ← Cloudflare Pages security headers
+  llms.txt                           ← LLM context file, auto-updated by engine
+  _headers                           ← Cloudflare Pages security headers (CSP)
+  sitemap.xml                        ← auto-generated before every build
 ```
 
 ---
 
-## Components
+## What Needs TODO vs What Is Ready
 
-All components in `src/components/` have stub implementations. Replace them with real ones matching the client's brand and design.
+### Ready to use (no changes needed):
+- All shadcn/ui components (`ui/`)
+- `Breadcrumbs.tsx` — just use it in pages
+- `ArticleNavigation.tsx` — pass `currentSlug`
+- `RelatedArticles.tsx` — pass `articles[]`
+- `BlogContent.tsx` — pass `articles` and `categories`
+- `JsonLd.tsx` — all schemas, uses `NEXT_PUBLIC_SITE_URL` env var
+- `feed.xml/route.ts` — RSS works out of the box
+- `robots.ts` — works out of the box
+- `sitemap.xml` — generated automatically before every build
 
-### Priority order:
-1. `Header.tsx` — navigation, logo, CTA button (use `Button` from `@/components/ui/button`)
-2. `Footer.tsx` — links, copyright, socials
-3. `BlogOGImage.tsx` — OG image (use `ImageResponse` from `next/og`, 1200×630)
-4. `ArticleAuthor.tsx` — author avatar, name, bio
-5. `RelatedArticles.tsx` — already functional, add styling
-6. `ArticleNavigation.tsx` — table of contents, add styling
+### Needs brand customization (fill in TODO markers):
+- `config.yml` — all fields are placeholders
+- `src/app/layout.tsx` — site name, description, keywords, analytics
+- `src/components/seo/BlogOGImage.tsx` — brand colors, initials, name, URL
+- `public/llms.txt` — site name, URL, niche
+- `src/app/blog/page.tsx` — hero heading and description
 
-### Contracts — do not change these:
+### Needs full implementation (stubs only):
+- `Header.tsx` — build from scratch matching client brand
+- `Footer.tsx` — build from scratch matching client brand
+- `src/app/page.tsx` — homepage hero, CTA, featured articles
 
-Generated articles import these exact named exports:
+---
+
+## Component Contracts
+
+Generated articles use these exact imports — do not rename, do not move:
+
 ```tsx
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -199,31 +206,22 @@ import { ArticleAuthor } from "@/components/ArticleAuthor";
 import { Badge } from "@/components/ui/badge";
 ```
 
-Do not rename these exports. Do not move these files.
-
-Component prop contracts (must match exactly):
+Exact prop signatures:
 
 ```tsx
-// ArticleAuthor — publish date + optional updated date
-<ArticleAuthor date="2026-01-15" updated="2026-02-01" />
+// Author byline — date is human-readable string, updated is optional
+<ArticleAuthor date="January 15, 2026" updated="February 1, 2026" />
 
-// ArticleNavigation — slug of current article, shows prev/next from blog-data.ts
+// Prev/next navigation — reads from blog-data.ts by index
 <ArticleNavigation currentSlug="my-article-slug" />
 
-// RelatedArticles — array of articles passed per-article (NOT auto-selected)
+// Related articles — passed explicitly per article, not auto-selected
 <RelatedArticles articles={[
   { title: "...", slug: "...", description: "..." },
-  { title: "...", slug: "...", description: "..." },
 ]} />
-```
 
-`BlogOGImage` contract (3 params, subtitle is optional):
-```tsx
-// Called from: src/app/blog/<slug>/opengraph-image.tsx
-import { BlogOGImage } from "@/components/seo/BlogOGImage";
-export default async function Image() {
-  return BlogOGImage({ title: "...", category: "Guide", subtitle: "optional" });
-}
+// OG image — called from opengraph-image.tsx, subtitle is optional
+BlogOGImage({ title: "...", category: "Guide", subtitle: "optional hook" })
 // Must return ImageResponse (1200x630)
 ```
 
@@ -236,10 +234,10 @@ export default async function Image() {
 2. Reads `docs/briefs/NN-slug.md`
 3. Generates `src/app/blog/<slug>/page.tsx` and `opengraph-image.tsx`
 4. Updates `src/lib/blog-data.ts`, `feed.xml/route.ts`, `public/llms.txt`, `CONTENT_PLAN.md`
-5. Runs `npm run build` to verify
+5. Runs `npm run build` to verify — auto-fixes JSX errors with Claude Sonnet
 6. Opens a Pull Request
 
-### CONTENT_PLAN.md format (engine parses this exactly — do not break):
+### CONTENT_PLAN.md format — do not break this structure:
 ```markdown
 ### Article Index (N topics)
 
@@ -247,7 +245,7 @@ export default async function Image() {
 |----|----------------|-----------|----------|
 | 1  | Article title  | ready     | P1       |
 ```
-Status values: `idea` → `ready` → `published`. Engine only picks `ready` topics.
+Status: `idea` → `ready` → `published`. Engine only picks `ready` topics.
 
 ### Brief format (`docs/briefs/NN-slug.md`):
 ```markdown
@@ -284,11 +282,29 @@ How the product connects to this topic.
 
 ---
 
+## SEO / GEO Architecture
+
+This template implements the same SEO/GEO stack as leadhunter-website (production reference):
+
+| Feature | Implementation |
+|---------|---------------|
+| Structured data | `JsonLd.tsx` — Article, FAQ, Organization, WebSite, Breadcrumb, HowTo schemas |
+| OG images | `BlogOGImage.tsx` — dynamic 1200×630 via `next/og` `ImageResponse` |
+| Sitemap | Auto-generated before every build from `page.tsx` files with git lastmod dates |
+| robots.txt | `src/app/robots.ts` — auto-generated, points to sitemap |
+| RSS feed | `feed.xml/route.ts` — full RSS 2.0 with atom namespace |
+| LLM context | `public/llms.txt` — updated by engine after each article |
+| Security headers | `public/_headers` — full CSP for Cloudflare Pages |
+| Analytics | Staggered loading pattern in `layout.tsx` (TODO: fill in IDs) |
+| Accessibility | Skip-to-content link in `layout.tsx` |
+| Breadcrumbs | `Breadcrumbs.tsx` component with JSON-LD |
+
+---
+
 ## config.yml Reference
 
 Full schema: [config.schema.yml](https://github.com/cybrixcc/leadhunter-engine/blob/master/config.schema.yml)
 
-Key fields:
 ```yaml
 site_name: "Client Blog"
 site_url: "https://blog.client.com"
@@ -311,3 +327,11 @@ git_user_email: "bot@client.com"
 | `GH_TOKEN` | PR creation (needs `repo` scope) |
 | `TELEGRAM_BOT_TOKEN` | Notifications (optional) |
 | `TELEGRAM_CHAT_ID` | Notifications (optional) |
+
+---
+
+## Cloudflare Pages Deploy Settings
+
+- Build command: `npm run build`
+- Build output directory: `out`
+- Environment variable: `NEXT_PUBLIC_SITE_URL=https://your-domain.com`
