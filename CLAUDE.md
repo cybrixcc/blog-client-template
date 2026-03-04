@@ -2,9 +2,74 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+---
+
+## How to Start — Read This First
+
+When you open this repo for the first time, read files in this order:
+
+1. **This file (CLAUDE.md)** — architecture, rules, conventions
+2. **GETTING_STARTED.md** — step-by-step task list for initial setup (delete it after completing all steps)
+3. **config.yml** — client site config (fill in all placeholders)
+4. **CONTENT_PLAN.md** — topic backlog
+5. **docs/briefs/** — per-topic brief files
+
+Do not start writing code until you have read all five.
+
+---
+
+## Recommended Models
+
+Use these models for different tasks:
+
+| Task | Model |
+|------|-------|
+| Initial setup, research, planning | `claude-sonnet-4-6` |
+| Writing components, pages, complex code | `claude-sonnet-4-6` |
+| Quick edits, small fixes | `claude-haiku-4-5-20251001` |
+| Article generation (engine) | `claude-haiku-4-5-20251001` |
+| JSX repair, build fixes | `claude-sonnet-4-6` |
+
+Default to `claude-sonnet-4-6` when unsure.
+
+---
+
 ## Language
 
-**Everything must be in English** — code, comments, commit messages, PR titles and descriptions, GitHub issue text.
+**Everything must be in English — no exceptions:**
+- All code, variable names, comments inside code
+- Commit messages
+- PR titles and descriptions
+- GitHub issue titles and bodies
+- Any text written to files in this repo
+
+---
+
+## Code Style Rules
+
+**No emojis — anywhere:**
+- Not in commit messages
+- Not in PR titles or descriptions
+- Not in UI text, headings, or button labels
+- Not in code comments
+
+**Icons — use Lucide React only:**
+- Import from `lucide-react`
+- Never use emoji as a substitute for icons
+- Never use other icon libraries
+- Example: use `<CheckIcon />` not ✓, use `<ArrowRightIcon />` not →
+
+**Commits:**
+- Plain English, no emoji, imperative mood
+- Good: `feat: add article navigation component`
+- Bad: `✨ Added article navigation 🎉`
+
+**Components:**
+- Always use `cn()` from `@/lib/utils` for conditional classes
+- Always use shadcn/ui components (`Badge`, `Button`, `Card`) — do not build primitives from scratch
+- Keep components focused — one responsibility per file
+
+---
 
 ## What This Repo Is
 
@@ -13,6 +78,8 @@ A client blog powered by [leadhunter-engine](https://github.com/cybrixcc/leadhun
 - **This repo** = Next.js site (UI, components, content) + config for the engine
 - **Engine repo** = all automation scripts (article generation, GSC, GEO, citations)
 - Articles are generated automatically via GitHub Actions and committed as PRs to this repo
+
+---
 
 ## Stack
 
@@ -24,12 +91,14 @@ A client blog powered by [leadhunter-engine](https://github.com/cybrixcc/leadhun
 | UI components | shadcn/ui (Badge, Button, Card, Accordion, Separator) |
 | UI primitives | Radix UI (`@radix-ui/react-*`) |
 | Variants | class-variance-authority |
-| Icons | lucide-react |
+| Icons | lucide-react only — no emoji substitutes |
 | Utilities | clsx, tailwind-merge, `cn()` from `@/lib/utils` |
 | Fonts | Geist (next/font/google) |
 | Hosting | Cloudflare Pages (security headers in `public/_headers`) |
 | Runtime | Node.js 22 |
 | Package manager | npm |
+
+---
 
 ## Themes
 
@@ -46,16 +115,22 @@ A client blog powered by [leadhunter-engine](https://github.com/cybrixcc/leadhun
 
 Each theme defines the same CSS variables (`--primary`, `--background`, `--card`, etc.) so all shadcn/ui components automatically adapt.
 
-**To customize a theme:** override the variables in `globals.css` under the relevant class. Only change `--primary` and `--accent` to match client brand colors — the rest will follow.
+**To customize:** only override `--primary` and `--accent` under the chosen theme class in `globals.css` to match the client's brand colors. The rest will follow automatically.
+
+---
 
 ## Commands
 
 ```bash
 npm install          # install dependencies
 npm run dev          # start dev server (turbopack)
-npm run build        # production build
+npm run build        # production build — must pass before any PR
 npm run lint         # eslint
 ```
+
+Always run `npm run build` before committing UI changes.
+
+---
 
 ## Repository Structure
 
@@ -65,9 +140,9 @@ CONTENT_PLAN.md                     ← topic backlog, auto-updated by engine
 docs/briefs/NN-slug.md              ← per-topic briefs, read by engine
 src/
   app/
-    layout.tsx                      ← root layout
+    layout.tsx                      ← root layout, theme class goes here
     page.tsx                        ← homepage
-    globals.css                     ← Tailwind base styles
+    globals.css                     ← Tailwind base + 4 themes
     blog/
       page.tsx                      ← blog index (/blog)
       [slug]/page.tsx               ← dynamic fallback route
@@ -75,51 +150,45 @@ src/
       <slug>/opengraph-image.tsx    ← OG images (written by engine)
       feed.xml/route.ts             ← RSS feed (updated by engine)
   components/
-    Header.tsx                      ← site header (TODO: implement)
-    Footer.tsx                      ← site footer (TODO: implement)
-    ArticleAuthor.tsx               ← author block in articles (TODO: implement)
-    ArticleNavigation.tsx           ← table of contents (TODO: implement)
-    RelatedArticles.tsx             ← related articles block (TODO: implement)
+    Header.tsx                      ← site header
+    Footer.tsx                      ← site footer
+    ArticleAuthor.tsx               ← author block in articles
+    ArticleNavigation.tsx           ← table of contents
+    RelatedArticles.tsx             ← related articles block
     seo/
-      JsonLd.tsx                    ← ArticleJsonLd + FAQJsonLd (implemented)
-      BlogOGImage.tsx               ← OG image component (TODO: implement)
+      JsonLd.tsx                    ← ArticleJsonLd + FAQJsonLd (ready to use)
+      BlogOGImage.tsx               ← OG image component
     ui/
       badge.tsx                     ← shadcn/ui Badge
       button.tsx                    ← shadcn/ui Button
       card.tsx                      ← shadcn/ui Card
-      accordion.tsx                 ← shadcn/ui Accordion (for FAQ sections)
+      accordion.tsx                 ← shadcn/ui Accordion
       separator.tsx                 ← shadcn/ui Separator
   lib/
-    utils.ts                        ← cn() helper (clsx + tailwind-merge)
+    utils.ts                        ← cn() helper
     blog-data.ts                    ← article index, auto-updated by engine
 public/
-  llms.txt                         ← LLM context file, auto-updated by engine
+  llms.txt                          ← LLM context file, auto-updated by engine
+  _headers                          ← Cloudflare Pages security headers
 ```
 
-## Your First Task as an Agent
+---
 
-When you open this repo for the first time, do this in order:
-
-1. **Fill in `config.yml`** — set `site_name`, `site_url`, `cta_url`, `niche`, and the `citation_research` section based on the client's website
-2. **Implement the components** — see the TODO list below
-3. **Add GitHub Secrets** — see SETUP.md for the full list
-4. **Add topics to `CONTENT_PLAN.md`** and write briefs in `docs/briefs/`
-5. **Trigger article generation** via Actions → Generate Blog Article → Run workflow
-
-## Components TODO
+## Components
 
 All components in `src/components/` have stub implementations. Replace them with real ones matching the client's brand and design.
 
 ### Priority order:
-1. `Header.tsx` — navigation, logo, CTA button
+1. `Header.tsx` — navigation, logo, CTA button (use `Button` from `@/components/ui/button`)
 2. `Footer.tsx` — links, copyright, socials
-3. `BlogOGImage.tsx` — OG image for articles (use `ImageResponse` from `next/og`)
-4. `ArticleAuthor.tsx` — author block shown at bottom of articles
-5. `RelatedArticles.tsx` — already functional, style it
-6. `ArticleNavigation.tsx` — table of contents, style it
+3. `BlogOGImage.tsx` — OG image (use `ImageResponse` from `next/og`, 1200×630)
+4. `ArticleAuthor.tsx` — author avatar, name, bio
+5. `RelatedArticles.tsx` — already functional, add styling
+6. `ArticleNavigation.tsx` — table of contents, add styling
 
-### What generated articles import:
-Every article generated by the engine uses these exact imports:
+### Contracts — do not change these:
+
+Generated articles import these exact named exports:
 ```tsx
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -128,17 +197,20 @@ import { ArticleNavigation } from "@/components/ArticleNavigation";
 import { RelatedArticles } from "@/components/RelatedArticles";
 import { ArticleAuthor } from "@/components/ArticleAuthor";
 ```
-These must exist and export named exports — do not rename them.
 
-### BlogOGImage contract:
+Do not rename these exports. Do not move these files.
+
+`BlogOGImage` contract:
 ```tsx
-// src/app/blog/<slug>/opengraph-image.tsx (generated by engine)
+// Called from: src/app/blog/<slug>/opengraph-image.tsx
 import { BlogOGImage } from "@/components/seo/BlogOGImage";
 export default async function Image() {
   return BlogOGImage({ title: "...", category: "Guide" });
 }
+// Must return ImageResponse (1200x630)
 ```
-`BlogOGImage` must return an `ImageResponse` (1200×630).
+
+---
 
 ## Engine Integration
 
@@ -150,7 +222,7 @@ export default async function Image() {
 5. Runs `npm run build` to verify
 6. Opens a Pull Request
 
-### CONTENT_PLAN.md format (do not break this):
+### CONTENT_PLAN.md format (engine parses this exactly — do not break):
 ```markdown
 ### Article Index (N topics)
 
@@ -158,7 +230,7 @@ export default async function Image() {
 |----|----------------|-----------|----------|
 | 1  | Article title  | ready     | P1       |
 ```
-Status: `idea` → `ready` → `published`. Engine only picks `ready` topics.
+Status values: `idea` → `ready` → `published`. Engine only picks `ready` topics.
 
 ### Brief format (`docs/briefs/NN-slug.md`):
 ```markdown
@@ -193,6 +265,8 @@ How the product connects to this topic.
 - https://source.com
 ```
 
+---
+
 ## config.yml Reference
 
 Full schema: [config.schema.yml](https://github.com/cybrixcc/leadhunter-engine/blob/master/config.schema.yml)
@@ -207,7 +281,9 @@ git_user_name: "Blog Bot"
 git_user_email: "bot@client.com"
 ```
 
-## Secrets Required
+---
+
+## Required GitHub Secrets
 
 | Secret | Used by |
 |--------|---------|
