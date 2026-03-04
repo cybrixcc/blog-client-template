@@ -10,47 +10,128 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A client blog powered by [leadhunter-engine](https://github.com/cybrixcc/leadhunter-engine).
 
-- All automation scripts live in the **engine repo** — this repo only holds config and content
-- Articles are generated automatically via GitHub Actions workflows
-- The engine checks out this repo + itself, runs scripts, then commits/pushes/creates a PR back here
+- **This repo** = Next.js site (UI, components, content) + config for the engine
+- **Engine repo** = all automation scripts (article generation, GSC, GEO, citations)
+- Articles are generated automatically via GitHub Actions and committed as PRs to this repo
 
-## Setup Checklist (do this first)
+## Stack
 
-1. **Edit `config.yml`** — fill in `site_name`, `site_url`, `cta_url`, `niche`, and the `citation_research` section
-2. **Add GitHub Secrets** — see README.md for the full list
-3. **Add topics to `CONTENT_PLAN.md`** — change status from `idea` to `ready` once a brief exists
-4. **Write a brief** in `docs/briefs/` — filename must match `NN-topic-slug.md` (e.g. `01-best-tools.md`)
-5. **Trigger article generation** — Actions → Generate Blog Article → Run workflow
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 16 (App Router) |
+| Language | TypeScript 5.9 strict mode |
+| Styling | Tailwind CSS v4 |
+| UI icons | lucide-react |
+| Utilities | clsx, tailwind-merge |
+| Runtime | Node.js 22 |
+| Package manager | npm |
 
-## File Structure That Matters to the Engine
+## Commands
+
+```bash
+npm install          # install dependencies
+npm run dev          # start dev server (turbopack)
+npm run build        # production build
+npm run lint         # eslint
+```
+
+## Repository Structure
 
 ```
-config.yml                        ← site config (read by engine)
-CONTENT_PLAN.md                   ← topic list with statuses (read + updated by engine)
-docs/briefs/01-topic-slug.md      ← per-topic briefs (read by engine)
-src/lib/blog-data.ts              ← article index (updated by engine)
-src/app/blog/<slug>/page.tsx      ← generated article files (written by engine)
-src/app/blog/feed.xml/route.ts    ← RSS feed (updated by engine)
-public/llms.txt                   ← LLM context file (updated by engine)
+config.yml                          ← engine config (site_name, site_url, niche, etc.)
+CONTENT_PLAN.md                     ← topic backlog, auto-updated by engine
+docs/briefs/NN-slug.md              ← per-topic briefs, read by engine
+src/
+  app/
+    layout.tsx                      ← root layout
+    page.tsx                        ← homepage
+    globals.css                     ← Tailwind base styles
+    blog/
+      page.tsx                      ← blog index (/blog)
+      [slug]/page.tsx               ← dynamic fallback route
+      <slug>/page.tsx               ← generated articles (written by engine)
+      <slug>/opengraph-image.tsx    ← OG images (written by engine)
+      feed.xml/route.ts             ← RSS feed (updated by engine)
+  components/
+    Header.tsx                      ← site header (TODO: implement)
+    Footer.tsx                      ← site footer (TODO: implement)
+    ArticleAuthor.tsx               ← author block in articles (TODO: implement)
+    ArticleNavigation.tsx           ← table of contents (TODO: implement)
+    RelatedArticles.tsx             ← related articles block (TODO: implement)
+    seo/
+      JsonLd.tsx                    ← ArticleJsonLd + FAQJsonLd (implemented)
+      BlogOGImage.tsx               ← OG image component (TODO: implement)
+  lib/
+    blog-data.ts                    ← article index, auto-updated by engine
+public/
+  llms.txt                         ← LLM context file, auto-updated by engine
 ```
 
-## CONTENT_PLAN.md Format
+## Your First Task as an Agent
 
-The Article Index table must follow this exact format:
+When you open this repo for the first time, do this in order:
 
+1. **Fill in `config.yml`** — set `site_name`, `site_url`, `cta_url`, `niche`, and the `citation_research` section based on the client's website
+2. **Implement the components** — see the TODO list below
+3. **Add GitHub Secrets** — see SETUP.md for the full list
+4. **Add topics to `CONTENT_PLAN.md`** and write briefs in `docs/briefs/`
+5. **Trigger article generation** via Actions → Generate Blog Article → Run workflow
+
+## Components TODO
+
+All components in `src/components/` have stub implementations. Replace them with real ones matching the client's brand and design.
+
+### Priority order:
+1. `Header.tsx` — navigation, logo, CTA button
+2. `Footer.tsx` — links, copyright, socials
+3. `BlogOGImage.tsx` — OG image for articles (use `ImageResponse` from `next/og`)
+4. `ArticleAuthor.tsx` — author block shown at bottom of articles
+5. `RelatedArticles.tsx` — already functional, style it
+6. `ArticleNavigation.tsx` — table of contents, style it
+
+### What generated articles import:
+Every article generated by the engine uses these exact imports:
+```tsx
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { FAQJsonLd, ArticleJsonLd } from "@/components/seo/JsonLd";
+import { ArticleNavigation } from "@/components/ArticleNavigation";
+import { RelatedArticles } from "@/components/RelatedArticles";
+import { ArticleAuthor } from "@/components/ArticleAuthor";
+```
+These must exist and export named exports — do not rename them.
+
+### BlogOGImage contract:
+```tsx
+// src/app/blog/<slug>/opengraph-image.tsx (generated by engine)
+import { BlogOGImage } from "@/components/seo/BlogOGImage";
+export default async function Image() {
+  return BlogOGImage({ title: "...", category: "Guide" });
+}
+```
+`BlogOGImage` must return an `ImageResponse` (1200×630).
+
+## Engine Integration
+
+### How article generation works:
+1. Engine reads `CONTENT_PLAN.md` → finds next topic with status `ready`
+2. Reads `docs/briefs/NN-slug.md`
+3. Generates `src/app/blog/<slug>/page.tsx` and `opengraph-image.tsx`
+4. Updates `src/lib/blog-data.ts`, `feed.xml/route.ts`, `public/llms.txt`, `CONTENT_PLAN.md`
+5. Runs `npm run build` to verify
+6. Opens a Pull Request
+
+### CONTENT_PLAN.md format (do not break this):
 ```markdown
 ### Article Index (N topics)
 
-| #  | Title              | Status    | Priority |
-|----|--------------------|-----------|----------|
-| 1  | Article title here | ready     | P1       |
+| #  | Title          | Status    | Priority |
+|----|----------------|-----------|----------|
+| 1  | Article title  | ready     | P1       |
 ```
+Status: `idea` → `ready` → `published`. Engine only picks `ready` topics.
 
-Status values: `idea` → `ready` → `published`
-Priority: `P0` (urgent), `P1` (normal), `P2` (low)
-
-## Brief Format (`docs/briefs/NN-slug.md`)
-
+### Brief format (`docs/briefs/NN-slug.md`):
 ```markdown
 # Brief: Article Title
 
@@ -69,10 +150,9 @@ One sentence summary.
 
 ## Key Points
 - Point 1
-- Point 2
 
 ## Why It Matters
-Why this matters to the audience.
+Context for the audience.
 
 ## Brand Angle
 How the product connects to this topic.
@@ -84,21 +164,28 @@ How the product connects to this topic.
 - https://source.com
 ```
 
-## Workflows
+## config.yml Reference
 
-All workflows delegate to `cybrixcc/leadhunter-engine`. Trigger manually via Actions tab:
+Full schema: [config.schema.yml](https://github.com/cybrixcc/leadhunter-engine/blob/master/config.schema.yml)
 
-| Workflow | What it does |
-|----------|-------------|
-| Generate Blog Article | Picks next `ready` topic, generates article, opens PR |
-| GSC Index Check | Submits unindexed pages to Google Search Console |
-| GSC Keyword Performance | Weekly keyword report → GitHub issue |
-| GEO Health Check | Scores articles for AI-search readiness → GitHub issue |
-| AI Article Review | Auto-triggered on PRs touching `src/app/blog/` |
-| AI Citation Research | Checks if your brand is cited by ChatGPT/Claude/Gemini |
+Key fields:
+```yaml
+site_name: "Client Blog"
+site_url: "https://blog.client.com"
+cta_url: "https://client.com/#contact"
+niche: "your niche"
+git_user_name: "Blog Bot"
+git_user_email: "bot@client.com"
+```
 
-## Engine Reference
+## Secrets Required
 
-Full schema for `config.yml`: [config.schema.yml](https://github.com/cybrixcc/leadhunter-engine/blob/master/config.schema.yml)
-
-Engine source: [cybrixcc/leadhunter-engine](https://github.com/cybrixcc/leadhunter-engine)
+| Secret | Used by |
+|--------|---------|
+| `ANTHROPIC_API_KEY` | Article generation, AI review |
+| `OPENAI_API_KEY` | Citation research |
+| `GEMINI_API_KEY` | Citation research |
+| `GSC_CREDENTIALS_JSON` | GSC index check + keyword performance |
+| `GH_TOKEN` | PR creation (needs `repo` scope) |
+| `TELEGRAM_BOT_TOKEN` | Notifications (optional) |
+| `TELEGRAM_CHAT_ID` | Notifications (optional) |
