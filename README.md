@@ -6,9 +6,7 @@ A GitHub Template Repository for spinning up a new SEO blog powered by [leadhunt
 
 1. Click **"Use this template"** → **"Create a new repository"**
 2. Clone your new repo
-3. Edit `config.yml` — fill in your site details, niche, brand patterns, competitors
-4. Add the required GitHub Secrets (see below)
-5. The scheduled workflows will run automatically; trigger them manually anytime via **Actions → Run workflow**
+3. Follow **[SETUP.md](./SETUP.md)** — step-by-step guide to get your first article generated
 
 ## Repository Structure
 

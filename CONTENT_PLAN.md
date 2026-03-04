@@ -1,13 +1,28 @@
 # Content Plan
 
-Add one topic per line. The article generator picks the next unwritten topic automatically.
+> Auto-updated by article generator. Do not edit topic statuses manually.
 
-<!--
-Format: plain text topic titles, one per line.
-Optionally create a matching brief file in briefs/<slug>.md for extra context.
+## Overview
 
-Examples:
-  How to generate B2B leads without cold outreach
-  Best LinkedIn automation tools 2026
-  Top alternatives to Hunter.io
--->
+- **Site:** My Blog
+- **Niche:** Your niche
+- **Engine:** [leadhunter-engine](https://github.com/cybrixcc/leadhunter-engine)
+
+---
+
+### Article Index (1 topics)
+
+| #  | Title                              | Status    | Priority |
+|----|------------------------------------|-----------|----------|
+| 1  | Your first article topic goes here | idea      | P1       |
+
+> Status values: `idea` (brief missing/incomplete) → `ready` (brief complete) → `published`
+> Priority: P0 = urgent, P1 = normal, P2 = low
+
+---
+
+### Blog Articles (0 total)
+
+| URL | Title | Category | Keywords |
+|-----|-------|----------|----------|
+
