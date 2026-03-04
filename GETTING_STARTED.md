@@ -38,7 +38,8 @@ Ask me for any information you need before proceeding with each step.
 ## For the AI agent — full task list
 
 You are setting up a new client blog. This repo was created from `cybrixcc/blog-client-template`.
-Read `CLAUDE.md` for the full architecture, stack, and component contracts.
+
+**Read `CLAUDE.md` first** — it is the permanent architecture reference for this repo. It stays in the repo forever and is the source of truth for any future agent working on this project. This file (`GETTING_STARTED.md`) is a one-time setup guide and will be deleted at the end.
 
 Work through the steps below in order. **Ask the human before proceeding with each step that requires client-specific information** — do not guess or use placeholders.
 

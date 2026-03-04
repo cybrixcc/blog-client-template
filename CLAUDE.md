@@ -6,15 +6,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## How to Start — Read This First
 
-When you open this repo for the first time, read files in this order:
+**This file is the permanent source of truth for this repo.** It stays here forever — initial setup or ongoing work, always start here.
+
+If `GETTING_STARTED.md` exists — this is a fresh repo, follow it for the one-time setup flow. It will be deleted after setup is complete.
+
+If `GETTING_STARTED.md` does not exist — setup is done. Read the files below for context, then proceed with the task at hand:
 
 1. **This file (CLAUDE.md)** — architecture, rules, conventions
-2. **GETTING_STARTED.md** — step-by-step task list for initial setup (delete it after completing all steps)
-3. **config.yml** — client site config (fill in all placeholders)
-4. **CONTENT_PLAN.md** — topic backlog
-5. **docs/briefs/** — per-topic brief files
+2. **config.yml** — client site config
+3. **CONTENT_PLAN.md** — topic backlog
+4. **docs/briefs/** — per-topic brief files
 
-Do not start writing code until you have read all five.
+Do not start writing code until you have read all four.
 
 ---
 
